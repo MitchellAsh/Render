@@ -10,25 +10,27 @@ if 'experiment_no' not in st.session_state:
 if 'df_experiment_results' not in st.session_state:
     st.session_state['df_experiment_results'] = pd.DataFrame(columns=['no', 'iterations', 'mean'])
 
+if 'mean_list' not in st.session_state:  # Store mean values to plot
+    st.session_state['mean_list'] = []
+
 st.header('Tossing a Coin')
 
-chart = st.line_chart([0.5])
+chart = st.line_chart(st.session_state['mean_list'])  # Use session_state to store the chart data
 
 def toss_coin(n):
-
     trial_outcomes = scipy.stats.bernoulli.rvs(p=0.5, size=n)
 
-    mean = None
-    outcome_no = 0
     outcome_1_count = 0
+    outcome_no = 0
 
     for r in trial_outcomes:
-        outcome_no +=1
+        outcome_no += 1
         if r == 1:
             outcome_1_count += 1
         mean = outcome_1_count / outcome_no
-        chart.add_rows([mean])
-        time.sleep(0.05)
+        st.session_state['mean_list'].append(mean)  # Append the mean to the list in session_state
+        chart.line_chart(st.session_state['mean_list'])  # Re-render the chart with updated data
+        time.sleep(0.05)  # Add delay to simulate coin toss
 
     return mean
 
@@ -46,7 +48,8 @@ if start_button:
                             mean]],
                      columns=['no', 'iterations', 'mean'])
         ],
-        axis=0)
+        axis=0
+    )
     st.session_state['df_experiment_results'] = \
         st.session_state['df_experiment_results'].reset_index(drop=True)
 
