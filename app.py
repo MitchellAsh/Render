@@ -15,6 +15,7 @@ if 'mean_list' not in st.session_state:  # Store mean values to plot
 
 st.header('Tossing a Coin')
 
+# Initialize the chart with the mean_list from session_state
 chart = st.line_chart(st.session_state['mean_list'])  # Use session_state to store the chart data
 
 def toss_coin(n):
@@ -29,7 +30,9 @@ def toss_coin(n):
             outcome_1_count += 1
         mean = outcome_1_count / outcome_no
         st.session_state['mean_list'].append(mean)  # Append the mean to the list in session_state
-        chart.line_chart(st.session_state['mean_list'])  # Re-render the chart with updated data
+        
+        # Re-render the chart with updated data
+        chart.line_chart(st.session_state['mean_list'])  
         time.sleep(0.05)  # Add delay to simulate coin toss
 
     return mean
